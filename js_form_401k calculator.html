@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>401(k) Calculator</title>
+    <style>
+        body {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            background-color: aliceblue;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 90%;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #2b3b58;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #0077b6;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #a2d2ff;
+            transition-delay: 100ms;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>401(k) Pre-tax vs Roth Calculator</h1>
+        <div class="form-group">
+            <label for="salaryAmount">Salary ($):</label>
+            <input type="number" id="salaryAmount" required>
+        </div>
+
+        <div class="form-group">
+            <label for="preTaxPercentage">Pre-tax Contribution Percentage (%):</label>
+            <input type="number" id="preTaxPercentage" min="0" max="100" value="15" required>
+        </div>
+
+        <div class="form-group">
+            <label for="taxRate">Current Marginal Tax Rate (%):</label>
+            <input type="number" id="taxRate" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="rothPercentage">Roth Contribution Percentage (%):</label>
+            <input type="number" id="rothPercentage" min="0" max="100" value="10" required>
+        </div>
+
+        <button type="button" onclick="calculate()">Calculate</button>
+
+        <div class="result">
+            <h2>Results:</h2>
+            <p id="preTaxResult"></p>
+            <p id="taxResult"></p>
+            <p id="rothResult"></p>
+            <p id="preRothSalary"></p>
+            <p id="totalContributions"></p>
+            <p id="remainingSalary"></p>
+            <!-- <p id="totalContributionsPercentage"></p> -->
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            let salaryAmount = parseFloat(document.getElementById("salaryAmount").value);
+            let preTaxPercentage = parseFloat(document.getElementById("preTaxPercentage").value) / 100;
+            let taxRate = parseFloat(document.getElementById("taxRate").value) / 100;
+            let rothPercentage = parseFloat(document.getElementById("rothPercentage").value) / 100; // moved this up
+            let preTaxContribution = salaryAmount * preTaxPercentage;
+            // let totalContributionsPercentage = parseFloat(document.getElementById("totalContributionsPercentage").value) / 100; // new declaration // **delete**
+            let taxedSalary = salaryAmount - preTaxContribution;
+            let taxAmount = taxedSalary * taxRate;
+            let preRothSalary = taxedSalary - taxAmount;        // added - rothPercentage 
+            // Calculate Roth contribution on the remaining salary after tax deduction
+            let rothContribution = salaryAmount * rothPercentage;
+            let totalContributions = preTaxContribution + rothContribution
+            let remainingSalary = preRothSalary - rothContribution; // added this line
+
+            document.getElementById("preTaxResult").textContent = "Pre-tax 401(k) Contribution: $" + preTaxContribution.toFixed(2) + " (" + (preTaxPercentage * 100) + "%)";
+            document.getElementById("taxResult").textContent = "Tax Amount: $" + taxAmount.toFixed(2);
+            document.getElementById("rothResult").textContent = "Roth 401(k) Contribution: $" + rothContribution.toFixed(2) + " (" + (rothPercentage * 100) + "%)";
+            document.getElementById("totalContributions").textContent = "Total 401(k) Contributions: $" + totalContributions.toFixed(2);
+            document.getElementById("remainingSalary").textContent = "Remaining Salary after Contributions: $" + remainingSalary.toFixed(2);
+        }
+    </script>
+
+</body>
+
+</html>
